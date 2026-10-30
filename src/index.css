@@ -2,41 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap');
+@font-face {
+    font-family: "Neue Montreal";
+    src: url("./assets/NeueMontreal-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-display: swap;
+}
 
-body{
-    font-family: "Hanken Grotesk", sans-serif;
+@font-face {
+    font-family: "Founders Grotesk";
+    src: url("./assets/FoundersGrotesk-Semibold.ttf") format("truetype");
+    font-weight: 600;
+    font-display: swap;
+}
+
+html,
+body {
+    background: #F1F1F1;
+}
+
+/* Hide the scrollbar everywhere while keeping the page scrollable */
+html,
+body,
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    font-family: "Neue Montreal", "Hanken Grotesk", sans-serif;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
-.landing h1{
-    font-family: "Bebas Neue", sans-serif;
+img {
+    user-select: none;
 }
 
-
-.marquee {
-    font-family: "Bebas Neue", sans-serif;
+/* Landing image grows from 0 to whatever width the breakpoint sets */
+@keyframes grow-width {
+    from {
+        width: 0;
+    }
 }
 
-
-.fliptext h1{
-    font-family: "Bebas Neue", sans-serif;
+.grow-width {
+    animation: grow-width 1s cubic-bezier(0.76, 0, 0.24, 1) 0.4s both;
 }
 
-.projectheading h1{
-    font-family: "Bebas Neue", sans-serif;
-}
-
-
-.clientheading h1{
-    font-family: "Hanken Grotesk", sans-serif;
-}
-
-.heading h1{
-    font-family: "Bebas Neue", sans-serif;
-}
-
-.footer h1{
-    font-family: "Bebas Neue", sans-serif;
+@media (prefers-reduced-motion: reduce) {
+    .grow-width {
+        animation: none;
+    }
 }

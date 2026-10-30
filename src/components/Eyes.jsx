@@ -1,49 +1,28 @@
-import React, { useEffect, useState } from 'react'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import EyePair from './EyePair'
+import images from '../images'
 
 function Eyes() {
-  const [rotate, setRotate] = useState(0)
-
-  useEffect(() =>{
-    window.addEventListener("mousemove", (e) =>{
-      let mouseX = e.clientX 
-      let mouseY = e.clientY
-
-      let deltaX = mouseX - window.innerWidth/2;
-      let deltaY = mouseY - window.innerHeight/2;
-
-      var  angle = Math.atan2(deltaY, deltaX) * (180/Math.PI);
-      setRotate(angle-180);
-    })
-  })
+  // Parallax: the background moves inside its frame while the section scrolls by
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const y = useTransform(scrollYProgress, [0, 1], ['-12%', '12%'])
 
   return (
-    <div className='eyes w-full h-screen overflow-hidden'>
-      <div data-scroll data-scroll-speed="-.7" className='relative w-full h-full bg-cover bg-center bg-[url("https://ochi.design/wp-content/uploads/2022/05/Top-Viewbbcbv-1-scaled.jpg")]'>
-      <div className='absolute flex gap-10 top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%]'>
-
-      <div className='flex items-center justify-center w-[15vw] h-[15vw] bg-zinc-100 rounded-full'>
-      <div className='relative w-[9.5vw] h-[9.5vw] rounded-full bg-zinc-900 flex items-center justify-center'>
-        <h3>
-          Play
-        </h3>
-      <div style={{transform: `translate(-50%, -50%) rotate(${rotate}deg)`}} className='line absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%] w-full h-10'>
-      <div className='w-4 h-4 rounded-full bg-zinc-100'></div>
-      </div>
-      </div>
-      </div>
-
-      <div className='flex items-center justify-center w-[15vw] h-[15vw] bg-zinc-100 rounded-full'>
-      <div className='relative w-[9.5vw] h-[9.5vw] bg-zinc-100 rounded-full bg-zinc-900 flex items-center justify-center'>
-        Play
-      <div style={{transform: `translate(-50%, -50%) rotate(${rotate}deg)`}} className='line absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%] w-full h-10'>
-      <div className='w-4 h-4 rounded-full bg-zinc-100'></div>
-      </div>
-      </div>
-      </div>
-
-      </div>
-      </div>
-    </div>
+    <section ref={ref} className='eyes relative w-full h-[70vh] md:h-screen overflow-hidden'>
+      <motion.div
+        className='absolute inset-x-0 -top-[15%] h-[130%] bg-cover bg-center'
+        // Gradient shows underneath if the photo is missing
+        style={{ y, backgroundImage: `url("${images.eyesBg}"), radial-gradient(circle at 30% 30%, #CDEA68 0%, #004D43 55%, #18181b 100%)` }}
+      />
+      <EyePair
+        className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+        size='w-[38vw] h-[38vw] md:w-[15vw] md:h-[15vw]'
+        pupil='w-[24vw] h-[24vw] md:w-[9.5vw] md:h-[9.5vw]'
+        label='Play'
+      />
+    </section>
   )
 }
 

@@ -1,70 +1,61 @@
-import Aos from 'aos';
-import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react'
-import { FiArrowUpRight } from "react-icons/fi";
-import "aos/dist/aos.css";
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { FiArrowUpRight } from 'react-icons/fi'
+import images from '../images'
+import SafeImg from './SafeImg'
 
+const lines = ["We Create", "Eye Opening", "Presentations"]
 
-function LandingPage() {
+// `ready` flips once the loader starts leaving, which kicks off the reveal
+function LandingPage({ ready = true }) {
+  // Parallax: the hero drifts down slower than the page as you scroll past it
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
 
-    useEffect(() =>{
-        Aos.init({
-            // disable: "phone",
-            duration: 1500,
-            easing: "ease-in-cubic"
-        });
-    }, []);
-
-    const [hovered, setHovered] = useState(false);
-    
-  return (    
-    <div data-scroll data-scroll-section data-scroll-speed="-.3" className='landing w-full h-screen text-[#212121] bg-[#F1F1F1] pt-1'>
-        <div className='textstructure mt-[10vw] px-[3.5vw]'>
-            {["We Create", "Eye Opening", "Presentations"].map((item, index)=>{
-                return  <div className='masker'>
-                    <div className='w-[50vw] flex items-end overflow-hidden'>
-                        {index === 1 && (
-                            // motion is a framer supported component
-                <motion.div
-                initial={{width:0}} 
-                animate={{width: "9vw"}}
-                transition={{ease: [0.76, 0, 0.24, 1], duration: 1}} 
-                className="mr-[1vw] w-[9vw] rounded-md h-[6vw] relative top-[-1vw] bg-green-500">
-                    <img style={{width: "100%", height: "100%", objectFit: "cover", objectPosition: "0% 90%", borderRadius: "5px"}} src="https://ochi.design/wp-content/uploads/2022/04/content-image01.jpg" alt="" />
-                </motion.div>)}
-                <h1 data-aos="fade-up" data-aos-delay="50" className="pt-[1vw] -mb-[0.3vw] uppercase text-[9.5vw] leading-[7.3vw] tracking-tight leading-[6.5vw] font-bold">
-                    {item}
-                    </h1>
-                    </div>
-            </div>
-            })}
-        </div>       
-        <div className=" border-t-[1px] border-zinc-400 mt-20 text-[1.2vw] flex justify-between items-center py-2 px-20">
-            {["For pulic and private companies", "From the first pitch to IPO"].map((item, index)=>(
-                <p className="text-md font-light tracking-tight leading-none">{item}</p>
-))}
-        <div
-         className='start flex items-center gap-1'>
-            <div>
-               <button
-                onMouseEnter={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
-                className={`w-[100%] h-[100%] border-[1px] border-zinc-900 py-[1.5px] px-3 uppercase text-[1.2vw] bg-zinc-100 rounded-full duration-[400ms] tracking-tight ${hovered ? 'bg-zinc-900 text-[#fff]' : ''}`}>
-                start the project
-               </button>
+  return (
+    <motion.section ref={ref} style={{ y }} className='landing w-full min-h-[85vh] md:min-h-screen text-[#212121] bg-[#F1F1F1] pt-28 md:pt-[12vw] flex flex-col'>
+      <div className='textstructure px-5 md:px-[3.5vw]'>
+        {lines.map((item, index) => (
+          <div key={item} className='masker'>
+            <div className='flex items-end overflow-hidden'>
+              {index === 1 && (
+                <div className={`${ready ? 'grow-width w-[16vw] md:w-[9vw]' : 'w-0'} mr-[1.5vw] h-[11vw] md:h-[5.7vw] rounded-md relative -top-[1.2vw] overflow-hidden shrink-0 bg-teal-ochi`}>
+                  <SafeImg
+                    className='w-full h-full object-cover object-[0%_90%]'
+                    src={images.landing}
+                    alt=""
+                  />
                 </div>
-            <div className='w-8 h-8 flex items-center justify-center rounded-full border-[1px] border-zinc-600'>
-                <span 
-                onMouseEnter={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
-                className={`flex justify-center items-center cursor-pointer w-[100%] h-[100%] bg-zinc-100 rounded-full duration-[400ms] ${hovered ? 'bg-zinc-900 text-[#fff]' : ''}`}>
-                <FiArrowUpRight />
-                </span>
+              )}
+              <motion.h1
+                initial={{ y: '100%' }}
+                animate={ready ? { y: 0 } : { y: '100%' }}
+                transition={{ ease: [0.22, 1, 0.36, 1], duration: 1.2, delay: 0.4 + index * 0.1 }}
+                className="font-founders uppercase text-[15vw] leading-[12.5vw] md:text-[9vw] md:leading-[7.2vw] tracking-tight font-semibold pt-[2vw] md:pt-[1vw]"
+              >
+                {item}
+              </motion.h1>
             </div>
-        </div>
-        </div>
-        <h5 className='flex justify-center p-[2vw] text-[#999]'>Scroll down</h5>
-    </div>
+          </div>
+        ))}
+      </div>
+
+      <div className='border-t border-zinc-400 mt-16 md:mt-[6vw] flex flex-col md:flex-row md:justify-between md:items-center gap-4 py-5 px-5 md:px-[3.5vw]'>
+        {["For public and private companies", "From the first pitch to IPO"].map((item) => (
+          <p key={item} className="text-base md:text-[1.1vw] font-light tracking-tight leading-none">{item}</p>
+        ))}
+        <a href="#" className='group start flex items-center gap-1 self-start md:self-auto'>
+          <span className='border border-zinc-500 py-1.5 px-4 uppercase text-sm md:text-[1vw] rounded-full duration-300 tracking-tight group-hover:bg-zinc-900 group-hover:text-white'>
+            start the project
+          </span>
+          <span className='w-9 h-9 flex items-center justify-center rounded-full border border-zinc-500 duration-300 group-hover:bg-zinc-900 group-hover:text-white'>
+            <FiArrowUpRight className='duration-300 group-hover:rotate-45' />
+          </span>
+        </a>
+      </div>
+      <p className='flex justify-center pb-6 text-[#999] text-sm mt-auto'>Scroll down</p>
+    </motion.section>
   )
 }
 
